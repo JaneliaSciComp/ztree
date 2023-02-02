@@ -1,19 +1,24 @@
 from pydantic import BaseModel, Field
-from typing import Mapping, Union, Literal
+from typing import Mapping, Union, Literal, Tuple
 
-LeafType = Literal['array', 'group']
+NodeType = Literal["array", "group"]
+
 
 class Attrs(BaseModel):
     class Config:
         extra = "allow"
 
-class Leaf(BaseModel):
-    type: LeafType
+
+class Node(BaseModel):
+    type: NodeType
+    name: str
     attrs: Attrs
 
-class Array(Leaf):
-    type: LeafType = Field('array', const=True)
 
-class Group(Leaf):
-    type: LeafType = Field('group', const=True)
+class Array(Node):
+    type: NodeType = Field("array", const=True)
+
+
+class Group(Node):
+    type: NodeType = Field("group", const=True)
     values: Mapping[str, Union["Group", Array]] = {}
